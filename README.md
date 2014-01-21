@@ -14,11 +14,14 @@ To install the tool just download "sgh", bring it to your /usr/bin directory and
 ToDo
 =======
 
-- Conflict Handling
 - Better Error Handling
 
 Changelog
 =======
+
+Version 0.3
+- integrated sgh continue commit/pull
+    - After dealing with conflicts simply run this command to continue what you were doing.
 
 Version 0.2
 - integrated sgh pull

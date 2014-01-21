@@ -2,10 +2,11 @@
 
 function help () {
     echo "";
-    echo "Simon's git helper version 0.2";
+    echo "Simon's git helper version 0.3";
     echo "";
     echo "    sgh commit \"message\"    - commits changes from branch to master";
     echo "    sgh pull                  - pulls master and merges with branch (only works if no changes are to commit)";
+    echo "    sgh continue commit/pull  - continues either commit or pull after conflict handling";
     echo "    sgh help                  - shows this help message";
     echo "";
     echo "Special thanks to Timo König for the idea";
@@ -106,10 +107,6 @@ then
             check $?
             
             echo ""
-            echo "sgh(): Creating branch if not exists -> $BRANCH_NAME"
-            git branch $BRANCH_NAME
-            
-            echo ""
             echo "sgh(): doing rebase 'n' shit"
             git rebase $BRANCH_NAME
             check $?
@@ -125,6 +122,75 @@ then
             
             echo ""
             echo "sgh(): Ending Pull"            
+        ;;
+        continue)
+            if [ $2 ]
+            then
+                case "$2" in
+                    commit)
+                        echo "sgh(): Continue Commit"
+                        echo ""
+                        echo "sgh(): Adding files"
+                        git add -A .
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Continue rebasing"
+                        git rebase --continue
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Checkout to $MASTER_NAME branch"
+                        git checkout $MASTER_NAME
+                        
+                        echo ""
+                        echo "sgh(): Merging $MASTER_NAME with $BRANCH_NAME"
+                        git merge $BRANCH_NAME
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Push to Master"
+                        git push
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Switching back to $BRANCH_NAME branch"
+                        git checkout $BRANCH_NAME
+                        
+                        echo ""
+                        echo "sgh(): Ending Commit"
+                    ;;
+                    pull)
+                        echo "sgh(): Continue Pull"
+                        echo ""
+                        echo "sgh(): Adding files"
+                        git add -A .
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Continue rebasing"
+                        git rebase --continue
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Checkout to $BRANCH_NAME branch"
+                        git checkout $BRANCH_NAME
+                        
+                        echo ""
+                        echo "sgh(): Merging $BRANCH_NAME with $MASTER_NAME"
+                        git merge $MASTER_NAME
+                        check $?
+                        
+                        echo ""
+                        echo "sgh(): Ending Pull" 
+                    ;;
+                    *)
+                        echo "Please use commit or pull as parameter"
+                    ;;
+                esac
+            else
+                echo "Please use commit or pull as parameter"
+            fi
         ;;
         *)
             help

@@ -196,8 +196,7 @@ function add() {
 function commit() {
     local m
     read -p "Please enter a commit message: " m
-    echo "$commit_type$m"
-    #git commit -m "$commit_type$m"
+    git commit -m "$commit_type$m"
 }
 
 # Purpose - Rebase branch
